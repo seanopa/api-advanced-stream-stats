@@ -63,4 +63,27 @@ class ApiTokenRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @param \App\Entity\User $user
+     * @return ApiToken
+     * @throws \Exception
+     */
+    public function create(\App\Entity\User $user): ApiToken
+    {
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+        $expires = \DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s', strtotime('+30 days')));
+
+        $token = new ApiToken();
+        $token
+            ->setToken(bin2hex(random_bytes(20)))
+            ->setUser($user)
+            ->setCreatedAt($date)
+            ->setExpiresAt($expires)
+            ;
+
+        $this->save($token, true);
+
+        return $token;
+    }
 }

@@ -2,3 +2,11 @@ when@dev:
     _errors:
         resource: '@FrameworkBundle/Resources/config/routing/errors.xml'
         prefix: /_error
+
+version:
+    path: /
+    controller: App\Controller\ApiVersionController
+
+api_login:
+    path: /v1/login
+    controller: App\Controller\LoginController
