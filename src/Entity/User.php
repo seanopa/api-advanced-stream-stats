@@ -47,6 +47,13 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     protected $username;
 
     /**
+     * @var json
+     *
+     * @ORM\Column(type="json", nullable=true)
+     */
+    protected $roles;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", nullable=false, options={"default"="0"})
@@ -82,7 +89,7 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     // the getter and setter methods
     public function getRoles()
     {
-        // TODO: Implement getRoles() method.
+        return $this->roles;
     }
 
     public function getPassword(): ?string
@@ -221,6 +228,13 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     public function setLastName(?string $last_name): self
     {
         $this->last_name = $last_name;
+
+        return $this;
+    }
+
+    public function setRoles(?array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }

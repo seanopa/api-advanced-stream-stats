@@ -1,25 +1,30 @@
 <?php
-// src/Security/TokenAuthenticator.php
 namespace App\Security;
 
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ApiTokenRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class TokenAuthenticator extends AbstractGuardAuthenticator
+/**
+ * Class TokenAuthenticator
+ * @package App\Security
+ */
+class TokenAuthenticator extends AbstractAuthenticator
 {
-    private $em;
+    private $tokenRepository;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(ApiTokenRepository $tokenRepository)
     {
-        $this->em = $em;
+        $this->tokenRepository = $tokenRepository;
     }
 
     /**
@@ -99,5 +104,24 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe(): bool
     {
         return false;
+    }
+
+    public function authenticate(Request $request)
+    {
+        $apiToken = $request->headers->get('X-AUTH-TOKEN');
+
+        if (empty($apiToken)) {
+            // The token header was empty, authentication fails with HTTP Status
+            // Code 401 "Unauthorized"
+            throw new CustomUserMessageAuthenticationException('No API token provided');
+        }
+
+        $token = $this->tokenRepository->findOneBy(['token' => $apiToken]);
+
+        if (empty($token)) {
+            throw new CustomUserMessageAuthenticationException('Auth token expired');
+        }
+
+        return new SelfValidatingPassport(new UserBadge($token->getUser()->getEmail()));
     }
 }
