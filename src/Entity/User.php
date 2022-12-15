@@ -1,16 +1,17 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UserRepository;
 
 /**
- * @ORM\Table(name="app_user")
+ * @ORM\Table(name="app_user", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQUE_EMAIL", columns={"email"}), @ORM\UniqueConstraint(name="UNIQUE_USERNAME", columns={"username"})})
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @method string getUserIdentifier()
  */
-class User implements UserInterface
+class User implements UserInterface, \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
@@ -32,7 +33,16 @@ class User implements UserInterface
     protected $password;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=25, nullable=true)
+     */
+    protected $first_name;
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true)
+     */
+    protected $last_name;
+
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
     protected $username;
 
@@ -47,11 +57,6 @@ class User implements UserInterface
      * @ORM\Column(type="boolean", nullable=false, options={"default"="0"})
      */
     protected $is_email_verified;
-
-    /**
-     * @ORM\Column(type="string", unique=true, nullable=true)
-     */
-    protected $api_token;
 
     /**
      * @var \DateTime|null
@@ -80,9 +85,9 @@ class User implements UserInterface
         // TODO: Implement getRoles() method.
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
-        // TODO: Implement getPassword() method.
+        return $this->password;
     }
 
     public function getSalt()
@@ -97,11 +102,126 @@ class User implements UserInterface
 
     public function getUsername()
     {
-        // TODO: Implement getUsername() method.
+        return $this->username;
     }
 
     public function __call($name, $arguments)
     {
         // TODO: Implement @method string getUserIdentifier()
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function setUsername(?string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function isIsDeleted(): ?bool
+    {
+        return $this->is_deleted;
+    }
+
+    public function setIsDeleted(bool $is_deleted): self
+    {
+        $this->is_deleted = $is_deleted;
+
+        return $this;
+    }
+
+    public function isIsEmailVerified(): ?bool
+    {
+        return $this->is_email_verified;
+    }
+
+    public function setIsEmailVerified(bool $is_email_verified): self
+    {
+        $this->is_email_verified = $is_email_verified;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deleted_at;
+    }
+
+    public function setDeletedAt(?\DateTimeInterface $deleted_at): self
+    {
+        $this->deleted_at = $deleted_at;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->first_name;
+    }
+
+    public function setFirstName(?string $first_name): self
+    {
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    public function setLastName(?string $last_name): self
+    {
+        $this->last_name = $last_name;
+
+        return $this;
     }
 }
