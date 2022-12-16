@@ -27,11 +27,7 @@ api_create_subscription:
     path: /v1/createSubscription
     controller: App\Controller\CreateSubscription
 
-api_delete_subscription:
-    path: /v1/deleteSubscription
-    controller: App\Controller\DeleteSubscription
-
-api_capture_transaction:
-    path: /v1/captureTransaction
-    controller: App\Controller\CaptureTransaction
+api_cancel_subscription:
+    path: /v1/cancelSubscription
+    controller: App\Controller\CancelSubscription
 
