@@ -15,6 +15,10 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      * @var UserRepository
      */
     private $userRepository;
+    /**
+     * @var User|null
+     */
+    private $user;
 
     public function __construct(UserRepository $userRepository)
     {
@@ -86,5 +90,10 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
     public function loadUserByUsername(string $username)
     {
         // TODO: Implement loadUserByUsername() method.
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
     }
 }
