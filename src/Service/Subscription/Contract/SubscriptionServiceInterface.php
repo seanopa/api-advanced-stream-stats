@@ -1,5 +1,7 @@
 <?php
-namespace App\Service\Contract;
+namespace App\Service\Subscription\Contract;
+
+use App\Service\Subscription\DataType\Subscription;
 
 interface SubscriptionServiceInterface
 {
@@ -14,6 +16,12 @@ interface SubscriptionServiceInterface
     public function createPlan($name, $billingFrequency, $currencyIsoCode, $price): ?string;
 
     /**
+     * @param $id
+     * @return mixed
+     */
+    public function getPlan($id);
+
+    /**
      * Must return customer id or null on failure
      * @param $firstName
      * @param $lastName
@@ -24,11 +32,20 @@ interface SubscriptionServiceInterface
 
     /**
      * Must return subscription id or null on failure
-     * @param $token
+     * @param $payload
      * @param $plan_id
+     * @return Subscription|null
+     */
+    public function createSubscription($payload, $plan_id): ?Subscription;
+
+    /**
      * @return string|null
      */
-    public function createSubscription($token, $plan_id): ?string;
-
     public function getServiceProviderName(): ?string;
+
+    /**
+     * @param $customerId
+     * @return string|null
+     */
+    public function createClientToken($customerId): ?string;
 }
