@@ -173,6 +173,8 @@ class AppFixtures extends Fixture
 
         $date = \DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
+        $lastDate = \DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s', strtotime('+12 months')));
+
         for ($i = 0; $i < 5 ; $i++) {
             $email = $faker->email;
             $user = new User();
@@ -204,7 +206,7 @@ class AppFixtures extends Fixture
                 ->setExternalId($customer_id)
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
-                ->setExpiresAt($date)
+                ->setExpiresAt($lastDate)
             ;
 
             $subscription = new Subscription();
@@ -213,6 +215,9 @@ class AppFixtures extends Fixture
                 ->setActive(true)
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
+                ->setRecurring(true)
+                ->setStartDate($date)
+                ->setEndDate($lastDate)
                 ;
 
             $membership->addSubscription($subscription);
