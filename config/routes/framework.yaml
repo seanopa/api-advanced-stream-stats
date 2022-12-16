@@ -5,8 +5,33 @@ when@dev:
 
 version:
     path: /
-    controller: App\Controller\ApiVersionController
+    controller: App\Controller\ApiVersion
 
 api_login:
     path: /v1/login
-    controller: App\Controller\LoginController
+    controller: App\Controller\Login
+
+api_get_summary:
+    path: /v1/getAccountSummary
+    controller: App\Controller\GetAccountSummary
+
+api_get_client_token:
+    path: /v1/getClientToken
+    controller: App\Controller\GetClientToken
+
+api_get_subscription_plans:
+    path: /v1/getSubscriptionPlans
+    controller: App\Controller\GetSubscriptionPlans
+
+api_create_subscription:
+    path: /v1/createSubscription
+    controller: App\Controller\CreateSubscription
+
+api_delete_subscription:
+    path: /v1/deleteSubscription
+    controller: App\Controller\DeleteSubscription
+
+api_capture_transaction:
+    path: /v1/captureTransaction
+    controller: App\Controller\CaptureTransaction
+
