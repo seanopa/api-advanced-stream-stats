@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\SubscriptionPlan;
+use App\Entity\Plan;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<SubscriptionPlan>
+ * @extends ServiceEntityRepository<Plan>
  *
- * @method SubscriptionPlan|null find($id, $lockMode = null, $lockVersion = null)
- * @method SubscriptionPlan|null findOneBy(array $criteria, array $orderBy = null)
- * @method SubscriptionPlan[]    findAll()
- * @method SubscriptionPlan[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Plan|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Plan|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Plan[]    findAll()
+ * @method Plan[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class SubscriptionPlanRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, SubscriptionPlan::class);
+        parent::__construct($registry, Plan::class);
     }
 
-    public function save(SubscriptionPlan $entity, bool $flush = false): void
+    public function save(Plan $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class SubscriptionPlanRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(SubscriptionPlan $entity, bool $flush = false): void
+    public function remove(Plan $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class SubscriptionPlanRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return SubscriptionPlan[] Returns an array of SubscriptionPlan objects
+//     * @return Plan[] Returns an array of Plan objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class SubscriptionPlanRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?SubscriptionPlan
+//    public function findOneBySomeField($value): ?Plan
 //    {
 //        return $this->createQueryBuilder('s')
 //            ->andWhere('s.exampleField = :val')

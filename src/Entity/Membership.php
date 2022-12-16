@@ -1,12 +1,14 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MembershipRepository;
 
 /**
- * @ORM\Table(name="app_subscription_membership")
+ * @ORM\Table(name="app_membership")
  * @ORM\Entity(repositoryClass=MembershipRepository::class)
  */
 class Membership
@@ -29,14 +31,9 @@ class Membership
     protected $user;
 
     /**
-     * @var SubscriptionPlan
-     *
-     * @ORM\ManyToOne(targetEntity="SubscriptionPlan")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="subscription_plan_id", referencedColumnName="id", nullable=false)
-     * })
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
-    protected $subscriptionPlan;
+    protected $provider;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=false)
@@ -70,6 +67,17 @@ class Membership
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $expires_at;
+
+    /**
+     * @ORM\OneToMany (targetEntity="Subscription", mappedBy="membership", cascade={"persist"})
+     */
+    protected $subscriptions;
+
+    public function __construct()
+    {
+        $this->subscriptions = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -148,14 +156,55 @@ class Membership
         return $this;
     }
 
-    public function getSubscriptionPlan(): ?SubscriptionPlan
+    /**
+     * @return Collection<int, Subscription>
+     */
+    public function getSubscriptions(): Collection
     {
-        return $this->subscriptionPlan;
+        return $this->subscriptions;
     }
 
-    public function setSubscriptionPlan(?SubscriptionPlan $subscriptionPlan): self
+    public function addSubscription(Subscription $subscription): self
     {
-        $this->subscriptionPlan = $subscriptionPlan;
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions->add($subscription);
+            $subscription->setMembership($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getMembership() === $this) {
+                $subscription->setMembership(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getActiveSubscription()
+    {
+        foreach ($this->subscriptions as $subscription) {
+            if ($subscription->isActive()) {
+                return $subscription;
+            }
+        }
+
+        return null;
+    }
+
+    public function getProvider(): ?string
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(?string $provider): self
+    {
+        $this->provider = $provider;
 
         return $this;
     }
