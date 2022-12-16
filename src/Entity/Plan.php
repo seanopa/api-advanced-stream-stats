@@ -1,15 +1,17 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\SubscriptionPlanRepository;
+use App\Repository\PlanRepository;
 
 /**
- * @ORM\Table(name="app_subscription_plan")
- * @ORM\Entity(repositoryClass=SubscriptionPlanRepository::class)
+ * @ORM\Table(name="app_plan")
+ * @ORM\Entity(repositoryClass=PlanRepository::class)
  */
-class SubscriptionPlan
+class Plan
 {
     /**
      * @ORM\Id
@@ -17,6 +19,16 @@ class SubscriptionPlan
      * @ORM\Column(type="integer")
      */
     protected $id;
+
+    /**
+     * @var PlanGroup
+     *
+     * @ORM\ManyToOne(targetEntity="PlanGroup")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="plan_group_id", referencedColumnName="id", nullable=false)
+     * })
+     */
+    protected $group;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
@@ -174,6 +186,18 @@ class SubscriptionPlan
     public function setCreatedAt(?\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getGroup(): ?PlanGroup
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?PlanGroup $group): self
+    {
+        $this->group = $group;
 
         return $this;
     }
