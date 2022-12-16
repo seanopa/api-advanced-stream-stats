@@ -37,10 +37,19 @@ class GetAccountSummary extends AbstractController
             'subscription' => [
                 'id' => $subscription->getId(),
                 'membership_id' => $subscription->getMembership()->getId(),
+                'is_recurring' => $subscription->isRecurring(),
+                'start_date' => $subscription->getStartDate(),
+                'end_date' => $subscription->getEndDate(),
+                'is_cancelled' => !empty($subscription->getDeletedAt())
             ],
             'plan' => [
                 'id' => $plan->getId(),
                 'name' => $plan->getName(),
+                'is_upgradable' => $plan->getPrice() == 0,
+                'price' => $plan->getPrice()/100,
+                'description' => sprintf('Billed every %s months', $plan->getFrequency()), // Relying on service
+                'currency_code' => $plan->getCurrency(),
+                'currency_symbol' => '$' // No need to implement this as it's for demo purposes only
             ],
             'features' => $featureItems
         ]);

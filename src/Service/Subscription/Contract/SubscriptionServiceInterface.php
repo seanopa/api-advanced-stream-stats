@@ -48,4 +48,6 @@ interface SubscriptionServiceInterface
      * @return string|null
      */
     public function createClientToken($customerId): ?string;
+
+    public function cancelSubscription(string $subscription_id): bool;
 }

@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Membership;
+use App\Entity\Subscription;
 use App\Repository\PlanRepository;
 use App\Repository\SubscriptionRepository;
 use App\Repository\TransactionRepository;
@@ -94,6 +95,23 @@ class SubscriptionService
     public function createClientToken($customer_id): ?string
     {
         return $this->subscriptionService->createClientToken($customer_id);
+    }
+
+    /**
+     * @param Subscription $subscription
+     * @return bool
+     */
+    public function cancelSubscription(Subscription $subscription): bool
+    {
+        $external_id = $subscription->getExternalId();
+        $success = $this->subscriptionService->cancelSubscription($external_id);
+
+        if ($success) {
+           $this->subscriptionRepository->cancel($subscription);
+           return true;
+        }
+
+        return false;
     }
 
 }

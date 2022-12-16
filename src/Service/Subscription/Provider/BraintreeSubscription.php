@@ -100,14 +100,6 @@ class BraintreeSubscription implements SubscriptionServiceInterface
     }
 
     /**
-     * @return array
-     */
-    public function getAllPlans(): array
-    {
-        return $this->gateway->plan()->all();
-    }
-
-    /**
      * @param $payload
      * @param $plan_id
      * @return Subscription|null
@@ -166,35 +158,10 @@ class BraintreeSubscription implements SubscriptionServiceInterface
         ]);
     }
 
-
-    public function createSale($amount, $nonceFromTheClient, $deviceDataFromTheClient)
+    public function cancelSubscription(string $subscription_id): bool
     {
-        $result = $this->gateway->transaction()->sale([
-            'amount' => '10.00',
-            'paymentMethodNonce' => $nonceFromTheClient,
-            'deviceData' => $deviceDataFromTheClient,
-            'options' => [
-                'submitForSettlement' => True
-            ]
-        ]);
+        $result = $this->gateway->subscription()->cancel($subscription_id);
 
-        $result = $this->gateway->transaction()->sale([
-            'amount' => $_POST['amount'],
-            'paymentMethodNonce' => $_POST['payment_method_nonce'],
-            'deviceData' => $_POST['device_data'],
-            'orderId' => $_POST["Mapped to PayPal Invoice Number"],
-            'options' => [
-                'submitForSettlement' => True,
-                'paypal' => [
-                    'customField' => $_POST["PayPal custom field"],
-                    'description' => $_POST["Description for PayPal email receipt"],
-                ],
-            ],
-        ]);
-        if ($result->success) {
-            print_r("Success ID: " . $result->transaction->id);
-        } else {
-            print_r("Error Message: " . $result->message);
-        }
+        return $result->success;
     }
 }
