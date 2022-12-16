@@ -65,6 +65,10 @@ class SubscriptionRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+    /**
+     * @param \App\Entity\Membership $membership
+     * @return void
+     */
     public function disableDefault(\App\Entity\Membership $membership)
     {
         $subscription = $this->findOneBy(['membership' => $membership, 'external_id' => null, 'active' => true]);
@@ -78,6 +82,14 @@ class SubscriptionRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param \App\Entity\Membership $membership
+     * @param Plan $plan
+     * @param string|null $external_subscription_id
+     * @param $startDate
+     * @param $endDate
+     * @return Subscription
+     */
     public function create(\App\Entity\Membership $membership, Plan $plan, ?string $external_subscription_id, $startDate, $endDate)
     {
         $date = \DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'));
@@ -97,5 +109,21 @@ class SubscriptionRepository extends ServiceEntityRepository
         $this->save($subscription, true);
 
         return $subscription;
+    }
+
+    /**
+     * @param Subscription $subscription
+     * @return void
+     */
+    public function cancel(Subscription $subscription)
+    {
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'));
+        $subscription
+            ->setUpdatedAt($date)
+            ->setDeletedAt($date)
+            ->setRecurring(false)
+            ;
+
+        $this->save($subscription, true);
     }
 }
