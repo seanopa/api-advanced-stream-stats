@@ -63,7 +63,8 @@
         "regenerate": "php bin/console make:entity --regenerate",
         "make:migration": "php bin/console make:migration",
         "migrate": "php bin/console doctrine:migrations:migrate --no-interaction",
-        "prepare": "composer dump-env && php bin/console cache:clear"
+        "prepare": "composer dump-env && php bin/console cache:clear",
+        "load:fixtures": "php bin/console doctrine:fixtures:load"
     },
     "conflict": {
         "symfony/symfony": "*"
