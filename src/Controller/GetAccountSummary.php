@@ -38,7 +38,7 @@ class GetAccountSummary extends AbstractController
                 'id' => $subscription->getId(),
                 'membership_id' => $subscription->getMembership()->getId(),
                 'is_recurring' => $subscription->isRecurring(),
-                'start_date' => $subscription->getStartDate()->format(\DateTimeInterface::RFC822),
+                'start_date' => $subscription->getStartDate()->format(\DateTimeInterface::RFC2822),
                 'end_date' => $subscription->getEndDate()->format(\DateTimeInterface::RFC2822),
                 'is_cancelled' => !empty($subscription->getDeletedAt())
             ],
