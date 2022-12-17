@@ -1,7 +1,8 @@
 <?php
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UserRepository;
@@ -85,6 +86,16 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $deleted_at;
+
+    /**
+     * @ORM\OneToMany (targetEntity="Membership", mappedBy="user")
+     */
+    protected $membership;
+
+    public function __construct()
+    {
+        $this->membership = new ArrayCollection();
+    }
 
     // the getter and setter methods
     public function getRoles()
@@ -235,6 +246,36 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     public function setRoles(?array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Membership>
+     */
+    public function getMembership(): Collection
+    {
+        return $this->membership;
+    }
+
+    public function addMembership(Membership $membership): self
+    {
+        if (!$this->membership->contains($membership)) {
+            $this->membership->add($membership);
+            $membership->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembership(Membership $membership): self
+    {
+        if ($this->membership->removeElement($membership)) {
+            // set the owning side to null (unless already changed)
+            if ($membership->getUser() === $this) {
+                $membership->setUser(null);
+            }
+        }
 
         return $this;
     }
