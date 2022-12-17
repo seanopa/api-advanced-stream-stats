@@ -107,12 +107,13 @@ class BraintreeSubscription implements SubscriptionServiceInterface
     public function createSubscription($payload, $plan_id): ?Subscription
     {
         $input = [
-       //     'paymentMethodToken' => $payload->nonce,// paymentMethodNonce
             'planId' => $plan_id
         ];
 
         if (!empty($payload->nonce)) {
             $input['paymentMethodNonce'] = $payload->nonce;
+        } else {
+            $input['paymentMethodToken'] = $payload->token;
         }
 
         $this->logger->debug('Creating Subscription ' . json_encode($input));
